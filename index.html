@@ -40,22 +40,12 @@
 
         document.getElementById('openAppButton').addEventListener('click', attemptOpenApp);
 
-        function setStatus(message, isError = false) {
-            const statusElement = document.getElementById('statusMessage');
-            statusElement.textContent = message;
-            if (isError) {
-                statusElement.className = 'mt-8 p-4 rounded-lg text-sm bg-red-100 text-red-700 transition-all duration-500';
-            } else {
-                statusElement.className = 'mt-8 p-4 rounded-lg text-sm bg-blue-100 text-blue-700 transition-all duration-500';
-            }
-        }
 
         /**
          * App Link およびフォールバックによるアプリ起動を試みるメインロジック
          */
         function attemptOpenApp() {
-            setStatus("アプリリンクURL (" + APP_LINK_URL + ") を使ってアプリ起動を試みています...");
-
+        
             const startTime = Date.now();
             
             // ------------------------------------------
@@ -68,28 +58,7 @@
             // ------------------------------------------
             // 2. 失敗時のフォールバック設定
             // ------------------------------------------
-            
-            // 一定時間内にアプリが開かれず、ブラウザがフォアグラウンドに残っている場合、App Linkは失敗したと見なす
-            const timeout = setTimeout(() => {
-                const elapsedTime = Date.now() - startTime;
-                
-                // 既にアプリが開かれていれば、このスクリプトは停止しているはず。
-                // まだブラウザに残っている場合、App Linkは失敗したか、ユーザーが拒否した。
-
-                if (elapsedTime >= TIMEOUT_MS) {
-                    
-                    // Option A: カスタムスキームを試みる (App Link非対応ブラウザ用)
-                    // window.location.href = CUSTOM_SCHEME_URL;
-
-                    // Option B: Play Storeへ誘導
-                    setStatus("アプリ起動に失敗しました。Playストアへリダイレクトします...", true);
-                    
-                    // ユーザーエクスペリエンスのため、Play Storeへのリダイレクト前に短い遅延を入れる
-                    setTimeout(() => {
-                        window.location.href = FALLBACK_URL;
-                    }, 500); 
-                }
-            }, TIMEOUT_MS);
+    
             
             // ユーザーがアプリに切り替わったことを検出する方法はないため、
             // 唯一の確実な方法は、上記のタイムアウトとフォールバックに依存することです。
